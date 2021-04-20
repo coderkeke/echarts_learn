@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Echarts简单实例</title>
+
+    <!--    引入js文件-->
+    <script src="./js/echarts.esm.js"></script>
+</head>
+
+
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 90vw;height:80vh;"></div>
+
+
+<script type="text/javascript">
+    function genData(len, offset) {
+        let arr = new Float32Array(len * 2)
+        let off = 0
+
+        for (let i = 0; i < len; i++) {
+            let x = +Math.random() * 10
+            let y = +Math.sin(x) - x * (len % 2 ? 0.1 : -0.1) * Math.random() + (offset || 0) / 10
+            arr[off++] = x
+            arr[off++] = y
+        }
+        return arr
+    }
+
+    let data1 = genData(10e5);
+    let data2 = genData(10e5, 5);
+</script>
+
+<script type="text/javascript">
+    function myChartFn(id) {
+        //初始化实例对象
+        const myChart = echarts.init(document.getElementById(id))
+
+        // 指定图表的配置项和数据
+        const option = {
+            title: {
+                text: echarts.format.addCommas(data1.length / 2 + data2.length / 2) + ' Points'
+            },
+            tooltip: {},
+            toolbox: {
+                left: 'center',
+                feature: {
+                    dataZoom: {}
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                right: 10
+            },
+            xAxis: [{}],
+            yAxis: [{}],
+            dataZoom: [{
+                type: 'inside'
+            }, {
+                type: 'slider'
+            }],
+            animation: false,
+            series: [{
+                name: 'A',
+                type: 'scatter',
+                data: data1,
+                dimensions: ['x', 'y'],
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.4
+                },
+                large: true
+            }, {
+                name: 'B',
+                type: 'scatter',
+                data: data2,
+                dimensions: ['x', 'y'],
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.4
+                },
+                large: true
+            }]
+        }
+
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+
+    function createEl(id) {
+        console.log(id)
+        let mainDiv = document.getElementById('main')
+        let El = document.createElement('div')
+        El.id = id
+        El.style.cssText = 'width: 90vw;height:80vh;'
+        document.body.insertBefore(El, mainDiv)
+        myChartFn(id)
+    }
+
+    for (let i = 0; i < 5; i++) {
+        createEl(`app${i}`)
+    }
+
+
+</script>
+</body>
+
+</html>
